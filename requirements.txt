@@ -1,0 +1,11 @@
+huggingface_hub>=0.24.6
+chromadb>=0.5.5
+langchain>=0.2.14
+langchain_community>=0.2.12
+langchain_openai>=0.1.22
+tqdm>=4.66.5
+torch>=2.0.1
+transformers>=4.44.1
+accelerate>= 0.33.0
+numpy>=1.26.4
+pandas>=2.2.2
