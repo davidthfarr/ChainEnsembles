@@ -102,7 +102,7 @@ ensembled_df = backward_pass(chained_df, len(links))
 To run a chain ensemble for all length `3` permutations of our links run the `get_permutations` function.
 
 ```python
-sim_results_df = get_combinations(links, names, 3, "Stance", n_trails=20, backward = True)
+sim_results_df = get_permutations(links, names, 3, "Stance", n_trails=20, backward = True)
 ```
 
 **Note:** We assume all datasets used in the simulation come from the labeling function. It's critical that model-specific datasets in the simulation are in the same order and have the requisite columns. If you are using the llm_label.py script, then this is handled for you automatically. 
