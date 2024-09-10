@@ -1,6 +1,6 @@
-# LLM Chain Ensembles for Efficient Zero-Shot Prediction
+# LLM Chain Ensembles
 
-This repository contains the code for [LLM Chain Ensembles](google.com). Confidence chaining strings together LLMs as a chain of classifiers using uncertainty estimates to select subsets of data to foward to the next model in the chain. This method reduces zero-shot prediction costs by exposing limited data to high-cost models at the end of the chain and can yeild increased performance. 
+This repository contains the code for [LLM Chain Ensembles for Scalable and Accurate Data Annotation](google.com). Confidence chaining strings together LLMs as a chain of classifiers using uncertainty estimates to select subsets of data to foward to the next model in the chain. This method reduces zero-shot prediction costs by exposing limited data to high-cost models at the end of the chain and can yeild increased performance. 
 
 ```mermaid
 ---
