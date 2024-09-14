@@ -12,6 +12,7 @@ from transformers import T5ForConditionalGeneration, AutoModelForCausalLM, BitsA
 import data_utils
 from hf_link import HuggingFaceLink
 from openai_link import OpenAILink
+from chain_sim import backward_pass
 
 class LLMChain:
     """ Chaining Together LLMs based on confidence score!
@@ -46,15 +47,17 @@ class LLMChain:
         meta_data["chain_len"] = self.chain_len
         meta_path = os.path.join(output_dir, "meta.json")
         data_utils.write_json(meta_path, meta_data)
+        df = data_df.copy()
+        df_link_list = []
         
         for link_num, link in enumerate(self.chain_list):
             print(f"\n[i] Link {link_num}: {link.model_name} in progress...\n")
 
             if CoT[link_num]:
-                prompts = data_df["CoT_prompts"].tolist()
+                prompts = df["CoT_prompts"].tolist()
 
             else:
-                prompts = data_df["prompts"].tolist()
+                prompts = df["prompts"].tolist()
                 
             link.load_model()            
             link_out = link.get_labels(prompts, 
@@ -64,33 +67,42 @@ class LLMChain:
             link.unload_model()
 
             for key, value in link_out.items():
-                data_df[key] = value
+                df[key] = value
 
-            n = len(data_df) // (self.chain_len - link_num)
-            threshold = data_df["conf_score"].nlargest(n).min()
+            n = len(df) // (self.chain_len - link_num)
+            threshold = df["conf_score"].nlargest(n).min()
+            meta_data[f"link_{link_num}_threshold"] = threshold
             
-            data_df["retain"] = data_df["conf_score"] >= threshold
-            data_df["forward"] = ~data_df["retain"]
+            df["retain"] = df["conf_score"] >= threshold
+            df["forward"] = ~df["retain"]
+            df["link"] = link_num
 
             link_df_path = os.path.join(output_dir, f"link_{link_num}_df.pkl")
             meta_data[f"link_{link_num}_path"] = f"link_{link_num}_df.pkl"
-            data_df.to_pickle(link_df_path)
+            df.to_pickle(link_df_path)
             print(f"\n[i] Link {link_num} complete. Saved to {link_df_path}.\n")
+
+            df_link_list.append(df.copy())
+            df = df[df["forward"]].copy()
+
+        # Concat results and run backpass (rank based ensemble)
+        final_df = pd.concat([df[df["retain"]] for df in df_link_list])    
+        final_df = final_df.drop(["forward", "retain"], axis = 1)
+
+        for link_num, df in enumerate(df_link_list):
+            is_available = final_df["link"] >= link_num
+            final_df[f"link_{link_num}_label"] = df["pred_label"].where(is_available, None)
+            final_df[f"link_{link_num}_conf_score"] = df["conf_score"].where(is_available, None)
             
-            data_df = data_df[data_df["forward"]].copy()
-
-        df_list = []
-        for link_num in range(self.chain_len):
-            df_path = os.path.join(output_dir, f"link_{link_num}_df.pkl")
-            df_list.append(pd.read_pickle(df_path))
-
-        all_retains = data_utils.concat_chain_results(df_list)
-        df_path = os.path.join(output_dir, "all_retained_df.pkl")
-        meta_data["all_retained_path"] = "all_retained_df.pkl"
-        all_retains.to_pickle(df_path)
+        final_df = backward_pass(final_df, self.chain_len)
+        
+        # Save results
+        df_path = os.path.join(output_dir, "final_df.pkl")
+        meta_data["final_df_path"] = "final_df.pkl"
+        final_df.to_pickle(df_path)
         data_utils.write_json(meta_path, meta_data)
 
-        return all_retains
+        return final_df
 
 def main():
     """
@@ -120,9 +132,8 @@ def main():
     if args.n > 0 and args.n <= data_df.shape[0]:
         data_df = data_df.sample(n = args.n)
 
-    # Get all the prompts and/or CoT prompts
+    # Get all the prompts
     data_df["prompts"] = data_df.apply(lambda row: prompter.simple(**row), axis=1).tolist()
-    data_df["CoT_prompts"] = data_df.apply(lambda row: prompter.CoT(**row), axis=1).tolist()
 
     chain = [HuggingFaceLink(model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct", 
                              model_class = AutoModelForCausalLM, 

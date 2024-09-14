@@ -143,35 +143,42 @@ def concat_chain_results(df_list):
     return retains_df
 
 def calculate_metrics(output_dir, column_map):
-    """ A helper function to calculate metrics for all chain links.
+    """ A helper function to calculate metrics for all chain links after chain
+        main in llm_chain.py.
     
     """
     meta_path = os.path.join(output_dir, "meta.json")
     meta_data = read_json(meta_path)
 
     df_names = [f"link_{lin}" for lin in range(meta_data["chain_len"])]
-    df_names.append("all_retained")
+    df_names.append("final")
 
     for df_name in df_names:
         df_path = os.path.join(output_dir, df_name + "_df.pkl")
         df = pd.read_pickle(df_path)
-        df = df[df["retain"]]
+        
+        if df_name != "final":
+            df = df[df["retain"]]
+            
         meta_data[df_name + "_retain_accuracy"] = get_accuracy(df, column_map)
         meta_data[df_name + "_retain_f1_macro"] = get_f1_macro(df, column_map)
         meta_data[df_name + "_retain_f1_weight"] = get_f1_weighted(df, column_map)
 
+    meta_data["ensemble_acc"] = get_accuracy(df, column_map, "backward_label")
+    meta_data["ensemble_f1_macro"] = get_f1_macro(df, column_map, "backward_label")
+    meta_data["ensemble_f1_weighted"] = get_f1_weighted(df, column_map, "backward_label")
     write_json(meta_path, meta_data)
 
-def get_accuracy(results_df, column_map):
+def get_accuracy(results_df, column_map, df_label_col="pred_label"):
     """Helper to get accuracy"""
-    return accuracy_score(results_df[column_map["label"]], results_df["pred_label"])
+    return accuracy_score(results_df[column_map["label"]], results_df[df_label_col])
 
-def get_f1_macro(results_df, column_map):
+def get_f1_macro(results_df, column_map, df_label_col="pred_label"):
     """Helper to get macro F1 score"""
-    return f1_score(results_df[column_map["label"]], results_df["pred_label"], 
+    return f1_score(results_df[column_map["label"]], results_df[df_label_col], 
                     average = "macro")
 
-def get_f1_weighted(results_df, column_map):
+def get_f1_weighted(results_df, column_map, df_label_col="pred_label"):
     """Helper to get weighted F1 score"""
-    return f1_score(results_df[column_map["label"]], results_df["pred_label"], 
+    return f1_score(results_df[column_map["label"]], results_df[df_label_col], 
                     average = "weighted")

@@ -24,7 +24,27 @@ flowchart LR
 
 ## Python Scripts and Modules
 
-### LLM Chain
+### Getting Started
+
+Each script requires either a Huggingface token or OpenAI API token. These are accessed via environmental variables. If you are running from the terminal, please set the following environmental variables.
+
+```bash
+$ export HF_TOKEN=your_hf_token_here!
+$ export OPENAI_API_TOKEN=your_openai_token_here!
+```
+
+If you are using our software as a python module in a notebook or your own script, you can set the environmental variables in python with he following code chunk.
+
+```python
+import os
+os.environ["HF_TOKEN"] = "your_hf_token_here!"
+os.environ["OPENAI_API_KEY"] = "your_openai_token_here!"
+```
+This software package is designed for systems with cuda support.
+
+The dependencies are contained within [requirements.txt](requirements.txt). 
+
+### LLM Chain Ensembles
 
 To run an example chain ensemble we provide an python script in [llm_chain.py](./src/llm_chain.py) that runs a chain of LLama3-8B-instruct, Flan-UL2, and GPT-4o. The code has three command line arguments: 
 - `-d` The dataset to use. The user is expected to enter "SemEval2016", "misinfo" or "ibc". The [SemEval2016](https://www.saifmohammad.com/WebPages/StanceDataset.htm) dataset is used for the stance detection task, the [misinfo](https://github.com/skgabriel/mrf-modeling) dataset is available for the misinformation detection task, and the [ibc](https://github.com/SALT-NLP/LLMs_for_CSS/tree/main/css_data/ibc) dataset is available for ideology detection task.
@@ -105,21 +125,4 @@ To run a chain ensemble for all length `3` permutations of our links run the `ge
 sim_results_df = get_permutations(links, names, 3, "Stance", n_trails=20, backward = True)
 ```
 
-**Note:** We assume all datasets used in the simulation come from the labeling function. It's critical that model-specific datasets in the simulation are in the same order and have the requisite columns. If you are using the llm_label.py script, then this is handled for you automatically. 
-
-### Authentication
-
-Please note that each script requires either a Huggingface token or OpenAI API token. These are accessed via environmental variables. If you are running from the terminal, please set the following environmental variables.
-
-```bash
-$ export HF_TOKEN=your_hf_token_here!
-$ export OPENAI_API_TOKEN=your_openai_token_here!
-```
-
-If you are using our software as a python module in a notebook or your own script, you can set the environmental variables in python with he following code chunk.
-
-```python
-import os
-os.environ["HF_TOKEN"] = "your_hf_token_here!"
-os.environ["OPENAI_API_KEY"] = "your_openai_token_here!"
-```
+**Note:** We assume all datasets used in the simulation come from the labeling function. It's critical that model-specific datasets in the simulation are in the same order and have the requisite columns. If you are using the llm_label.py script, then this is handled for you automatically.
