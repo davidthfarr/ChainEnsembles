@@ -52,7 +52,18 @@ class HuggingFaceLink:
         hf_token: str = None,
         quantization_config: BitsAndBytesConfig = None,
     ):
-        """Initializes a HuggingFaceLink"""
+        """Initializes a HuggingFaceLink
+        
+        Args:
+            model_name (str):
+            model_class (AutoModelForCausalLM | T5ForConditionalGeneratio):
+            labels (List[str]):
+            hf_token (str):
+            quantization_config (BitsAndBytesConfig):
+
+        Returns:
+            
+        """
         # Defined class attributes
         self.model_name = model_name
         self.model_class = model_class

@@ -1,9 +1,9 @@
 [project]
 name = "chain-ensembles"
 version = "0.1.0"
-description = "Add your description here"
+description = "A python package for LLM Chain Ensembles!"
 authors = [
-    { name = "Nico Manzonelli", email = "nicomanzonelli@gmail.com" }
+    { name = "Nico Manzonelli", email = "nicomanzonelli@gmail.com" },
 ]
 dependencies = [
     "torch>=2.5.1",
