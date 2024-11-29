@@ -19,7 +19,7 @@ dependencies = [
     "scikit-learn>=1.5.2",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.9.0"
 
 [build-system]
 requires = ["hatchling"]
@@ -36,3 +36,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/chain_ensembles"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3.3",
+]

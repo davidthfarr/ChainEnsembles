@@ -16,5 +16,5 @@ __all__ = [
     "get_permutations",
     "OpenAILink",
     "HuggingFaceLink",
-    MODELS_TESTED,
+    "MODELS_TESTED",
 ]
