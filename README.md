@@ -75,8 +75,8 @@ llama_link = HuggingFaceLink(
     quantization_config = BitsAndBytesConfig(load_in_8bit=True)
 )
 
-prompts = ["Is the following statement against, for, or neutral for something? I'm against something"]
-data_out = llama_link.get_labels()
+prompts = ["Classify the stance toward something. I'm against something"]
+data_out = llama_link.get_labels(prompts)
 ```
 
 #### OpenAILink
@@ -84,8 +84,8 @@ data_out = llama_link.get_labels()
 ```python
 gpt4_link = OpenAILink(model_name="gpt-4o", labels = labels)
 
-prompts = ["Is the following statement against, for, or neutral for something? I'm against something"]
-data_out = gpt4_link.get_labels()
+prompts = ["Classify the stance toward something. I'm against something"]
+data_out = gpt4_link.get_labels(prompts)
 ```
 
 ### Chaining LLMs
@@ -99,7 +99,7 @@ from transformers import T5ForConditionalGeneration, AutoModelForCausalLM, BitsA
 from chain_ensembles import HuggingFaceLink, OpenAILink, LLMChain
 
 data_df = pd.DataFrame({
-    "prompts": ["Is the following statement against, for, or neutral for something? I'm against something"]*12, 
+    "prompts": ["Classify the stance toward something. I'm against something"]*12, 
     "Stance": ["against"]*12
 })
 

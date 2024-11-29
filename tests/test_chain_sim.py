@@ -3,6 +3,8 @@
 
 """
 
+from chain_ensembles import chain_dataframes, backward_pass, get_permutations
+
 def test_chain_dataframes():
     pass
 
