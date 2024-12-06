@@ -68,14 +68,14 @@ For huggingface models you initialize the `HuggingFaceLink`, call `.load_model()
 
 ```python
 from chain_ensembles import HuggingFaceLink
-from transformers import BitsAndBytesConfig, AutoModelForCausalLM
+from transformers import QuantoConfig, AutoModelForCausalLM
 
 labels = ["against", "for", "neutral"]
 llama_link = HuggingFaceLink(
     model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct",
     model_class = AutoModelForCausalLM,
     labels = labels,
-    quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+    quantization_config = QuantoConfig('int2')
 )
 llama_link.load_model()
 prompts = ["Classify the stance toward something. I'm against something"]

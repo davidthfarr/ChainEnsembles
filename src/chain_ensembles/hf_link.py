@@ -13,7 +13,7 @@ from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
     T5ForConditionalGeneration,
-    BitsAndBytesConfig,
+    QuantoConfig
 )
 
 MODELS_TESTED = {
@@ -34,7 +34,7 @@ class HuggingFaceLink:
         model_class (AutoModelForCausalLM | T5ForConditionalGeneration):
         labels (List[str]): A list of the target class labels for classification.
         hf_token (str): The users huggingface token if necessary.
-        quantization_config (BitsAndBytesConfig): The config used for
+        quantization_config (QuantoConfig): The config used for
             quantization for Huggingface models.
 
         _model (AutoModel): Model loaded from AutoModel.from_pretrained()
@@ -50,7 +50,7 @@ class HuggingFaceLink:
         model_class: AutoModelForCausalLM | T5ForConditionalGeneration,
         labels: List[str],
         hf_token: str = None,
-        quantization_config: BitsAndBytesConfig = None,
+        quantization_config: QuantoConfig = None,
     ):
         """Initializes a HuggingFaceLink
         
@@ -59,7 +59,7 @@ class HuggingFaceLink:
             model_class (AutoModelForCausalLM | T5ForConditionalGeneratio):
             labels (List[str]):
             hf_token (str):
-            quantization_config (BitsAndBytesConfig):
+            quantization_config (QuantoConfig):
 
         Returns:
             

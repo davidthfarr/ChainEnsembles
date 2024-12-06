@@ -11,7 +11,7 @@ import data_utils
 from transformers import (
     AutoModelForCausalLM,
     T5ForConditionalGeneration,
-    BitsAndBytesConfig,
+    QuantoConfig,
 )
 
 from chain_ensembles import HuggingFaceLink
@@ -74,13 +74,13 @@ def main():
             model_name="meta-llama/Meta-Llama-3.1-8B-Instruct",
             model_class=AutoModelForCausalLM,
             labels=labels,
-            quantization_config=BitsAndBytesConfig(load_in_8bit=True),
+            quantization_config=QuantoConfig('int4'),
         ),
         HuggingFaceLink(
             model_name="google/flan-ul2",
             model_class=T5ForConditionalGeneration,
             labels=labels,
-            quantization_config=BitsAndBytesConfig(load_in_8bit=True),
+            quantization_config=QuantoConfig('int4'),
         ),
         OpenAILink(model_name="gpt-4o", labels=labels),
     ]
