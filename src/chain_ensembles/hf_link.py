@@ -23,7 +23,6 @@ MODELS_TESTED = {
     "mistralai/Mistral-7B-Instruct-v0.2": AutoModelForCausalLM,
 }
 
-
 class HuggingFaceLink:
     """
 
@@ -74,7 +73,7 @@ class HuggingFaceLink:
         self._model = None
         self._tokenizer = None
         self._label_token_ids = None
-        self._device = self._set_device()
+        self._set_device()
 
         # Warns user if using model that is untested
         if self.model_name not in MODELS_TESTED.keys():
@@ -328,9 +327,11 @@ class HuggingFaceLink:
         Returns: None
         """
         if torch.cuda.is_available():
+            print("[i] Using CUDA.")
             self._device = "cuda"
 
         elif torch.backends.mps.is_available():
+            print("[i] Using Apple Silicon.")
             self._device = "mps"
 
         else:
