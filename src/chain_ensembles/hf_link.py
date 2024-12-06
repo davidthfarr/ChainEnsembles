@@ -199,6 +199,7 @@ class HuggingFaceLink:
             output_logits=True,
             return_dict_in_generate=True,
             pad_token_id=self._tokenizer.eos_token_id,
+            return_legacy_cache=True
         )
 
         raw_label = self._get_text_response(model_out, input_ids[0].shape[0])
@@ -237,6 +238,7 @@ class HuggingFaceLink:
             output_logits=True,
             return_dict_in_generate=True,
             pad_token_id=self._tokenizer.eos_token_id,
+            return_legacy_cache=True
         )
 
         cot_resp = self._get_text_response(model_out, input_ids[0].shape[0])
@@ -253,6 +255,7 @@ class HuggingFaceLink:
             output_logits=True,
             return_dict_in_generate=True,
             pad_token_id=self._tokenizer.eos_token_id,
+            return_legacy_cache=True
         )
 
         raw_label = self._get_text_response(model_out, input_ids[0].shape[0])
