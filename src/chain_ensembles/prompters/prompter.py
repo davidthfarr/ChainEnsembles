@@ -1,4 +1,4 @@
-""" prompter.py
+"""prompter.py
 
 Module to help build prompts for zero-shot classification.
 
@@ -6,30 +6,31 @@ Module to help build prompts for zero-shot classification.
 
 import string
 
-class Prompter:
-    """ Basic prompt. 
-    
-    Must be inherented by all subclasses for specific problems and/or datasets.
 
-    Attributes: 
-        - num_classes (int): The number of classes to be predicted.
-        - labels(List[str]): List of labels in display order.
+class Prompter:
+    """Basic prompt.
+
+    Must be inherited by all subclasses for specific problems and/or datasets.
+
+    Attributes:
+        num_classes (int): The number of classes to be predicted.
+        labels(List[str]): List of labels in display order.
     """
 
     def __init__(self, labels):
-        """ Init prompt.
+        """Init prompt.
 
         Args:
-            - labels(List[str]): List of labels in display order.
+            labels(List[str]): List of labels in display order.
         """
         self.num_classes = len(labels)
         self.labels = list(labels)
 
     def _make_multiple_choice_str(self):
-        """ Makes a multiple choice string from the label map
+        """Makes a multiple choice string from the label map
 
         Args: None
-        Returns: (str): Formated multiple choice string.
+        Returns: (str): Formatted multiple choice string.
         """
         out_str = ""
         for idx, label in enumerate(self.labels):
@@ -41,9 +42,9 @@ class Prompter:
         """Makes a string listing the class names. For example
 
         it returns "'label1', 'label2', or 'label3'"
-        
+
         Args: None
-        Returns: (str): Formated constraint string.
+        Returns: (str): Formatted constraint string.
         """
         out_str = ""
         for idx, label in enumerate(self.labels):
@@ -56,10 +57,10 @@ class Prompter:
         return out_str
 
     def _make_constraint_str(self):
-        """ Makes a contraint string based on the label map
-        
+        """Makes a constraint string based on the label map
+
         Args: None
-        Returns: (str): Formated constraint string.
+        Returns: (str): Formatted constraint string.
         """
         out_str = "\nOnly respond with " + self._make_class_list() + "."
         return out_str
