@@ -13,7 +13,7 @@ from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
     T5ForConditionalGeneration,
-    BitsAndBytesConfig,
+    QuantoConfig
 )
 
 MODELS_TESTED = {
@@ -22,7 +22,6 @@ MODELS_TESTED = {
     "microsoft/Phi-3-medium-128k-instruct": AutoModelForCausalLM,
     "mistralai/Mistral-7B-Instruct-v0.2": AutoModelForCausalLM,
 }
-
 
 class HuggingFaceLink:
     """
@@ -34,7 +33,7 @@ class HuggingFaceLink:
         model_class (AutoModelForCausalLM | T5ForConditionalGeneration):
         labels (List[str]): A list of the target class labels for classification.
         hf_token (str): The users huggingface token if necessary.
-        quantization_config (BitsAndBytesConfig): The config used for
+        quantization_config (QuantoConfig): The config used for
             quantization for Huggingface models.
 
         _model (AutoModel): Model loaded from AutoModel.from_pretrained()
@@ -50,7 +49,7 @@ class HuggingFaceLink:
         model_class: AutoModelForCausalLM | T5ForConditionalGeneration,
         labels: List[str],
         hf_token: str = None,
-        quantization_config: BitsAndBytesConfig = None,
+        quantization_config: QuantoConfig = None,
     ):
         """Initializes a HuggingFaceLink
         
@@ -59,7 +58,7 @@ class HuggingFaceLink:
             model_class (AutoModelForCausalLM | T5ForConditionalGeneratio):
             labels (List[str]):
             hf_token (str):
-            quantization_config (BitsAndBytesConfig):
+            quantization_config (QuantoConfig):
 
         Returns:
             
@@ -74,7 +73,7 @@ class HuggingFaceLink:
         self._model = None
         self._tokenizer = None
         self._label_token_ids = None
-        self._device = self._set_device()
+        self._set_device()
 
         # Warns user if using model that is untested
         if self.model_name not in MODELS_TESTED.keys():
@@ -200,6 +199,7 @@ class HuggingFaceLink:
             output_logits=True,
             return_dict_in_generate=True,
             pad_token_id=self._tokenizer.eos_token_id,
+            return_legacy_cache=True
         )
 
         raw_label = self._get_text_response(model_out, input_ids[0].shape[0])
@@ -238,6 +238,7 @@ class HuggingFaceLink:
             output_logits=True,
             return_dict_in_generate=True,
             pad_token_id=self._tokenizer.eos_token_id,
+            return_legacy_cache=True
         )
 
         cot_resp = self._get_text_response(model_out, input_ids[0].shape[0])
@@ -254,6 +255,7 @@ class HuggingFaceLink:
             output_logits=True,
             return_dict_in_generate=True,
             pad_token_id=self._tokenizer.eos_token_id,
+            return_legacy_cache=True
         )
 
         raw_label = self._get_text_response(model_out, input_ids[0].shape[0])
@@ -328,9 +330,11 @@ class HuggingFaceLink:
         Returns: None
         """
         if torch.cuda.is_available():
+            print("[i] Using CUDA.")
             self._device = "cuda"
 
         elif torch.backends.mps.is_available():
+            print("[i] Using Apple Silicon.")
             self._device = "mps"
 
         else:

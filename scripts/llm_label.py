@@ -6,7 +6,7 @@ Simple labeling approach to label an entire dataset with a single model.
 
 import os
 import argparse
-from transformers import BitsAndBytesConfig
+from transformers import QuantoConfig
 
 import data_utils
 from chain_ensembles import HuggingFaceLink, MODELS_TESTED
@@ -112,10 +112,13 @@ def main():
 
     else:
         if args.q == 8:
-            qunat_config = BitsAndBytesConfig(load_in_8bit=True)
+            qunat_config = QuantoConfig('int8')
 
         elif args.q == 4:
-            qunat_config = BitsAndBytesConfig(load_in_4bit=True)
+            qunat_config = QuantoConfig('int4')
+
+        elif args.q == 2:
+            quant_config = QuantoConfig('int2')
 
         else:
             qunat_config = None

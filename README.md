@@ -62,19 +62,22 @@ The smallest data labeling class is a link! We provide two sources for data labe
 - Opensource models available on [Huggingface](https://huggingface.co/) with the [transformers](https://huggingface.co/docs/transformers) package. 
 - Closed source models available through the [Open AI API](https://platform.openai.com/docs/overview).
 
-The method needed to label data with any link is the `.get_labels()` method!
-
 #### HuggingFaceLink Example
 
+For huggingface models you initialize the `HuggingFaceLink`, call `.load_model()` to load the model, and call `.get_labels()` on your prompts to prompt the model. Here's a brief example.
+
 ```python
+from chain_ensembles import HuggingFaceLink
+from transformers import QuantoConfig, AutoModelForCausalLM
+
 labels = ["against", "for", "neutral"]
 llama_link = HuggingFaceLink(
     model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct",
     model_class = AutoModelForCausalLM,
     labels = labels,
-    quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+    quantization_config = QuantoConfig('int2')
 )
-
+llama_link.load_model()
 prompts = ["Classify the stance toward something. I'm against something"]
 data_out = llama_link.get_labels(prompts)
 ```
