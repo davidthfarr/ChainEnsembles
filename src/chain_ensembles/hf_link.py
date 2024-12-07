@@ -9,6 +9,7 @@ from tqdm import tqdm
 from collections import defaultdict
 from typing import List, Tuple, Dict
 from torch.nn.functional import softmax
+from huggingface_hub.errors import GatedRepoError
 from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
@@ -116,6 +117,17 @@ class HuggingFaceLink:
             print(f"[!] Error loading model! {err}.")
             self._model = None
             self._tokenizer = None
+
+        except GatedRepoError as err:
+            print(f"[!] Error loading model. Missing required HF_TOKEN. {err}")
+            self._model = None
+            self._tokenizer = None
+
+        except OSError as err:
+            print(f"[!] Error loading model! {err}.")
+            self._model = None
+            self._tokenizer = None
+
 
     def unload_model(self):
         """Clear memory and set _model and _tokenizer to None.

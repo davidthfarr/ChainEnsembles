@@ -1,6 +1,6 @@
 [project]
 name = "chain-ensembles"
-version = "0.1.1"
+version = "0.1.2"
 description = "A python package for LLM Chain Ensembles!"
 readme = "README.md"
 requires-python = ">= 3.12.0"
@@ -9,14 +9,14 @@ authors = [
 ]
 dependencies = [
     "torch>=2.5.1",
-    "huggingface-hub>=0.26.2",
+    "huggingface-hub>=0.26.5",
     "chromadb>=0.5.20",
     "langchain>=0.3.8",
     "langchain-community>=0.3.8",
     "langchain-openai>=0.2.9",
     "tqdm>=4.67.1",
     "transformers>=4.47.0",
-    "accelerate>=1.1.1",
+    "accelerate>=1.2.0",
     "pandas>=2.2.3",
     "scikit-learn>=1.5.2",
     "optimum-quanto>=0.2.6",

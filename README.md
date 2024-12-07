@@ -32,7 +32,7 @@ Install the most recent release with pip.
 uv pip install chain-ensembles
 ```
 
-We recommend using [uv](https://github.com/astral-sh/uv) to manage your python environment and packages. It is much faster and cleaner.
+We recommend using [uv](https://github.com/astral-sh/uv) to manage your python environment and packages.
 
 ```
 uv venv
@@ -97,7 +97,7 @@ Putting it all together now!
 
 ```python
 import pandas as pd
-from transformers import T5ForConditionalGeneration, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import T5ForConditionalGeneration, AutoModelForCausalLM, QuantoConfig
 
 from chain_ensembles import HuggingFaceLink, OpenAILink, LLMChain
 
@@ -112,13 +112,13 @@ llama_link = HuggingFaceLink(
     model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct", 
     model_class = AutoModelForCausalLM, 
     labels = labels,
-    quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+    quantization_config = QuantoConfig("int8")
 )
 flan_link = HuggingFaceLink(
     model_name = "google/flan-ul2", 
     model_class = T5ForConditionalGeneration, 
     labels = labels, 
-    quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+    quantization_config = QuantoConfig("int8")
 )
 gpt4_link = OpenAILink(model_name="gpt-4o", labels = labels)
 
@@ -170,7 +170,7 @@ links = [llama_link, flan_link, gpt_link]
 names = ["llama", "flan", "gpt", "mistral", "phi"]
 ```
 
-To run a sinle chain ensemble iteration, use the `chain_dataframes` and `backward_pass` functions.
+To run a single chain ensemble iteration, use the `chain_dataframes` and `backward_pass` functions.
 
 ```python
 chained_df = chain_dataframes(links, "Stance")
