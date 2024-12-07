@@ -48,11 +48,9 @@ def get_cli_args():
         "-q",
         type=int,
         required=False,
-        default=8,
         help='Model quantization to apply. Supported are "8" '
-        'and "4" for 8 and 4 bit respectivley. To load '
-        "with full precison specify -q != 8 or 4. "
-        "(default = 8)",
+        ',"4" and "2" for 8, 4, and 2 bit respectivley. To load '
+        "with full precison specify -q != 8, 4, 2. ",
     )
     return parser.parse_args()
 
@@ -78,9 +76,6 @@ def main():
     if args.m not in MODELS.keys():
         print("[!] Invalid model selection! Use -h to veiw supported models.")
         return 1
-
-    # Get HF and OpenAI tokens
-    hf_token = os.getenv("HF_TOKEN")
 
     # Load data
     data_path, column_map, label_map, prompter = data_utils.get_data_args(args.d)
@@ -112,24 +107,24 @@ def main():
 
     else:
         if args.q == 8:
-            qunat_config = QuantoConfig('int8')
+            quant_config = QuantoConfig('int8')
 
         elif args.q == 4:
-            qunat_config = QuantoConfig('int4')
+            quant_config = QuantoConfig('int4')
 
         elif args.q == 2:
             quant_config = QuantoConfig('int2')
 
         else:
-            qunat_config = None
+            quant_config = None
 
+        print(quant_config)
         model_name = MODELS[args.m]
         model = HuggingFaceLink(
             model_name=model_name,
             model_class=MODELS_TESTED[model_name],
             labels=labels,
-            hf_token=hf_token,
-            quantization_config=qunat_config,
+            quantization_config=quant_config
         )
 
     model.load_model()
